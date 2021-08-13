@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Nav from 'react-bootstrap/Nav';
+import Link from "next/link";
 import Navbar from 'react-bootstrap/Navbar';
 import useUser from '../utils/useUser';
 
@@ -15,7 +16,7 @@ const TopNav = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               <Nav.Link href="/video">Video Reports</Nav.Link>
-              <Nav.Link href="/recording">New Recording</Nav.Link>
+              <Link href="/recording"><a className="nav-link">New Recording</a></Link>
               <Nav.Link href="/api/logout">Log Out</Nav.Link>
             </Nav>
             <Navbar.Text>Hello, {user.user.username}</Navbar.Text>
