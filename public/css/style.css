@@ -1,0 +1,12 @@
+#recorder, #recordedVideo {
+  margin: 0 auto;
+  width: 100%;
+}
+
+#recordedVideo {
+  display: none;
+}
+
+#upload, #stop {
+  display: none;
+}
