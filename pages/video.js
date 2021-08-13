@@ -57,8 +57,33 @@ const Video = () => {
     } else {
       toast("Failed to add comment due to error!", {autoClose: false});
     }
+  }
 
-    // result.user => 'Ada Lovelace'
+  // handle delete button in video
+  const handleDeleteButton = async (event) => {
+    const videoID = event.target.getAttribute('data');
+
+    const res = await fetch(
+      '/api/deletevideo',
+      {
+        body: JSON.stringify({
+          videoID: videoID
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST'
+      }
+    )
+    
+    const result = await res.json();
+    console.log(result);
+    
+    if (result.status == 'success') {
+      toast("Done!");
+    } else {
+      toast("Failed to delete the video due to error!", {autoClose: false});
+    }
   }
 
   const showCommentOrButton = (data) => {
@@ -77,15 +102,12 @@ const Video = () => {
         </Col>
       </>
     }
-    // else {
-    //   return<>
-    //     <Card.Title> {new Date(data.uploadDate).toDateString()}&nbsp; <Badge pill variant="secondary">New</Badge></Card.Title>
-    //     <Card.Subtitle>Uploaded by {data.user}</Card.Subtitle>
-    //     <Card.Text className="py-1">
-    //       <Button className="float-right" variant="primary" onClick={() => {handleShow(); setVideoID(data._id)}}>Add Comment</Button>
-    //     </Card.Text>
-    //   </>
-    // }
+  }
+
+  const deleteButton = (data) => {
+    return<>
+      <Button className="float-right" type="button" variant="danger" onClick={handleDeleteButton} data={data._id}>Delete</Button>
+    </>
   }
 
   const generatetags = () => {
@@ -167,7 +189,7 @@ const Video = () => {
                       <Card.Body>
                         <Card.Title>{new Date(video.uploadDate).toDateString()}</Card.Title>
                         <Card.Text className="comment">{video.comment}</Card.Text>
-                        <Button className="float-right" type="button" variant="danger">Delete</Button>
+                        {deleteButton(video, user)}
                       </Card.Body>
                     </Card>
                   </Col>
