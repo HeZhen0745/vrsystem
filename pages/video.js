@@ -6,10 +6,13 @@ import useSWR from 'swr';
 import { useState } from 'react';
 import {Modal, Button, Card, Badge, CardDeck, Col, Row, Container, Nav} from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 const Video = () => {
   // comment button state definition
   const [ videoID, setVideoID ] =  useState(0);
+  // comment button comment text state definition
+  const [ selectedComment, setComment ] =  useState(0);
   // modal dialog state definition
   const [ show, setShow ] = useState(false);
   const { user } = useUser({ redirectTo: '/' });
@@ -96,7 +99,7 @@ const Video = () => {
               <Card.Title>{new Date(data.uploadDate).toDateString()}</Card.Title>
               <Card.Subtitle>Uploaded by {data.user}</Card.Subtitle>
               <Card.Text className="py-1 comment">{data.comment}</Card.Text>
-              <Button className="float-right" type="button" variant="secondary">Edit Comment</Button>
+              <Button className="float-right" type="button" variant="secondary" onClick={() => {handleShow(); setVideoID(data._id); setComment(data.comment)}}>Edit Comment</Button>
             </Card.Body>
           </Card>
         </Col>
@@ -124,58 +127,57 @@ const Video = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  if(user.user.type == "supervisor")
-  return <>
-  <TopNav />
-  <main>
-    <Nav variant="tabs" defaultActiveKey="">
-      {generatetags()}
-    </Nav>
-    <div className="album py-5 px-4 bg-light">
-      <Container fluid="true">
-        <CardDeck>
-          <Row xs={1} md={2} lg={3} xl={4}>
-            {data.map((video) => (
-                showCommentOrButton(video, user)
-            ))}
-          </Row>
-        </CardDeck>
-        {/*<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">*/}
-        {/*  {data.map((video) => (*/}
-        {/*    <div className="col">*/}
-        {/*      <div className="card shadow-sm">*/}
-        {/*        <video className="bd-placeholder-img card-img-top video" controls src={`/videos/${video.file}`} />*/}
-        {/*        <div className="card-body">*/}
-        {/*          {showCommentOrButton(video, user)}*/}
-        {/*        </div>*/}
-        {/*      </div>*/}
-        {/*    </div>*/}
-        {/*  ))}*/}
-        {/*</div>*/}
-      </Container>
-    </div>
-  </main>
-  <Modal show={show} onHide={handleClose} centered>
-      <form onSubmit={handleSaveComment} method="POST">
-      <Modal.Header closeButton>
-        <Modal.Title>Add Comment</Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        <textarea className="form-control" name="commentText" id="commentText"></textarea>
-        <input type="hidden" name="commentedVideoID" id="commentedVideoID" value={videoID} />
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>Close</Button>
-        <Button type="submit" variant="primary">Save comment</Button>
-      </Modal.Footer>
-      </form>
-    </Modal>
-    <ToastContainer />
-  </>
-
-  if(user.user.type == "student")
+  if(user.user.type == "supervisor") {
+    return <>
+    <TopNav />
+    <main>
+      <Nav variant="tabs" defaultActiveKey="">
+        {generatetags()}
+      </Nav>
+      <div className="album py-5 px-4 bg-light">
+        <Container fluid="true">
+          <CardDeck>
+            <Row xs={1} md={2} lg={3} xl={4}>
+              {data.map((video) => (
+                  showCommentOrButton(video, user)
+              ))}
+            </Row>
+          </CardDeck>
+          {/*<div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">*/}
+          {/*  {data.map((video) => (*/}
+          {/*    <div className="col">*/}
+          {/*      <div className="card shadow-sm">*/}
+          {/*        <video className="bd-placeholder-img card-img-top video" controls src={`/videos/${video.file}`} />*/}
+          {/*        <div className="card-body">*/}
+          {/*          {showCommentOrButton(video, user)}*/}
+          {/*        </div>*/}
+          {/*      </div>*/}
+          {/*    </div>*/}
+          {/*  ))}*/}
+          {/*</div>*/}
+        </Container>
+      </div>
+    </main>
+    <Modal show={show} onHide={handleClose} centered>
+        <form onSubmit={handleSaveComment} method="POST">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Comment</Modal.Title>
+        </Modal.Header>
+  
+        <Modal.Body>
+          <textarea className="form-control" name="commentText" id="commentText">{selectedComment}</textarea>
+          <input type="hidden" name="commentedVideoID" id="commentedVideoID" value={videoID} />
+        </Modal.Body>
+  
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>Close</Button>
+          <Button type="submit" variant="primary">Save comment</Button>
+        </Modal.Footer>
+        </form>
+      </Modal>
+      <ToastContainer />
+    </>
+  } else if(user.user.type == "student") {
     return <>
       <TopNav />
       <main>
@@ -199,6 +201,7 @@ const Video = () => {
         </div>
       </main>
       </>
+  }
 }
 
 export default Video
