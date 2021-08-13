@@ -113,27 +113,20 @@ const Video = () => {
     </>
   }
 
-  const generatetags = () => {
-    for (var i in user.user.supervise) {
-      return <>
-        <Nav.Item>
-          <Nav.Link href="">{user.user.supervise}</Nav.Link>
-        </Nav.Item>
-      </>
-    }
-  }
 
   // modal dialog event handler
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const userLinks = [];
+  user.user.supervise.map((s, i) => {        
+    userLinks.push(<Nav.Item><Nav.Link href={`/video/${s}`}>{s}</Nav.Link></Nav.Item>);
+  })
 
   if(user.user.type == "supervisor") {
     return <>
     <TopNav />
     <main>
-      <Nav variant="tabs" defaultActiveKey="">
-        {generatetags()}
-      </Nav>
+      <Nav variant="tabs" defaultActiveKey="">{userLinks}</Nav>
       <div className="album py-5 px-4 bg-light">
         <Container fluid="true">
           <CardDeck>

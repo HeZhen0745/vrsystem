@@ -77,8 +77,6 @@ const Newupdates = () => {
                     </Card>
                 </Col>
             </>
-        } else {
-            
         }
     }
 
